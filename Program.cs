@@ -4,15 +4,20 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        string inputPath = "D:\\Coding\\Seminary\\kasiopea24\\Books\\input.txt";
-        string outputPath = "D:\\Coding\\Seminary\\kasiopea24\\Books\\output.txt";
+        string inputPath = "";  // To be edited
+        string outputPath = ""; // To be edited
+
+        if (inputPath == string.Empty || outputPath == string.Empty)
+            throw new Exception("Please type in your input and output file paths before running this program.");
+
         using StreamReader sr = new(inputPath);
         using StreamWriter sw = new(outputPath);
 
         int problemCount = int.Parse(sr.ReadLine());
 
+        // One iteration per problem
         for (int i = 0; i < problemCount; i++)
-            SolveProblem(sr, sw);
+            SolveProblem(sr, sw); // Leave everything for the blackbox function to solve
     }
 
     /// <summary>
@@ -23,10 +28,10 @@ internal class Program
     /// of all the spaces between the leftmost and the rightmost book on that shelf. We just need to get that number of spaces.
     /// 
     /// We process the data in a left-to-right iterative manner. Firstly, we find the leftmost book. We then iterate further to find
-    /// the next book to the right. This makes all spaces between the first and the second book actually effective and we can
+    /// the next book to the right. The presence of another book makes all spaces between the first and the second book actually effective and we can
     /// add the number of these spaces to the total space count. This process is repeated starting from the second book
     /// (the previous end point becomes the new starting point and a newfound book will become the new end point) until no end point is found
-    /// at the end of the whole shelf. This is the reason why we couldn't simply count all the spaces on the shelf to begin with. The spaces after the
+    /// after the rightmost book. This is the reason why we couldn't simply count all the spaces on the shelf to begin with. The spaces after the
     /// rightmost book are, by definition from paragraph 2, irrelevant. We won't add these to the total space count at all.
     /// After we process the last position on the shelf, the number of total steps needed to get a coherent sequence of books
     /// will be stored in the total space count variable.
@@ -38,12 +43,15 @@ internal class Program
         int currentSpaceCount = 0; // The number of spaces after the current last found book
         int totalSpaceCount = 0; // The total number of spaces before the current last found book
 
+        // One text character per iteration
         for (int i = 0; i < shelfLength; i++)
         {
             char c = (char)sr.Read();
 
             if (c == 'K')
             {
+                // This char is a book
+
                 if (isSearching)
                     isSearching = false;
 
@@ -52,9 +60,13 @@ internal class Program
             }
             else if (c == '_')
             {
-                if (isSearching) // Skip while the leftmost book on the shelf hasn't been found yet
+                // This char is a vacancy
+
+                // Skip while the leftmost book on the shelf hasn't been found yet
+                if (isSearching)
                     continue;
 
+                // Otherwise count this space in
                 currentSpaceCount++;
             }
         }
